@@ -12,7 +12,7 @@ CYAN  =\033[0;36m
 RESET =\033[0m
 
 ### Set information about our C++ compiler
-LANGUAGE?=C
+LANGUAGE?=CPP
 ifeq ($(LANGUAGE), CPP)
 	CC = g++
 	SOURCE_SUFFIX = .cpp
@@ -28,12 +28,15 @@ endif
 LDFLAGS = -lm
 CFLAGS = -Wall -O3
 
+# Delete default list of suffixes for recipes
+.SUFFIXES:
+
 ### Compile targets
 SOURCES := $(notdir $(wildcard src/*$(SOURCE_SUFFIX)))
 OBJECTS  = $(SOURCES:$(SOURCE_SUFFIX)=.o)
 TARGETS  = $(basename $(notdir $(wildcard tests/*$(SOURCE_SUFFIX))))
 
-all : $(TARGETS) end
+all : intro $(TARGETS) end
 
 .PHONY: intro build end
 
@@ -56,7 +59,7 @@ build :
 	@rm -rf build
 	@mkdir build
 
-$(OBJECTS) :
+%.o :
 	@echo -e "${CYAN} - Building object: $@${RESET}"
 	$(eval objectfile=$(addprefix build/,$@))
 	$(eval sourcefile=$(addprefix src/,$(notdir $(subst .o,$(SOURCE_SUFFIX),$(objectfile)))))
